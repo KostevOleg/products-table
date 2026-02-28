@@ -1,0 +1,80 @@
+@let prod = product();
+@if(loading()){
+  <div class="fullscreen-loader">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+} @else if(!prod){
+  <div class="fullscreen-loader">
+  <p>Error </p>
+  <button [routerLink]="['/']" class="btn btn-back">
+    Back to the table
+</button>
+</div>
+} @else {
+  <section class="product-page">
+  
+  <div class="product-container">
+  
+  <div class="gallery">
+  <img
+    class="main-image"
+    [src]="selectedImage() || prod.thumbnail"
+    [alt]="prod.title"
+  />
+
+  <div class="thumbnails">
+    @for (img of prod.images; track img) {
+      <img
+        [src]="img"
+        [alt]="prod.title"
+        (click)="setImage(img)"
+        [class.active]="(selectedImage() || prod.thumbnail) === img"
+      />
+    }
+  </div>
+</div>
+  
+    <div class="details">
+  
+      <span class="category">{{prod.category }}</span>
+  
+      <h1 class="title">{{prod.title}}</h1>
+  
+      <div class="rating">
+        ⭐ {{prod.rating}}
+      </div>
+  
+      <div class="price-block">
+        <span class="price">{{prod.price}}</span>
+        <span class="discount">{{prod.discountPercentage}}</span>
+      </div>
+  
+      <p class="description">
+       {{ prod.description}}
+      </p>
+  
+      <div class="meta">
+        <div><strong>Brand:</strong> {{prod.brand}}</div>
+        <div><strong>Stock:</strong> <span class="in-stock">{{prod.stock}}</span></div>
+      </div>
+  
+      <div class="tags">
+        @for(tag of prod.tags; track tag){
+          <span>{{tag}}</span>
+        }
+      </div>
+  
+      <button class="btn">
+        Add to Cart
+      </button>
+      <button [routerLink]="['/']" class="btn btn-back">
+        Back
+    </button>
+    </div>
+  
+  </div>
+  
+  </section>
+
+}
