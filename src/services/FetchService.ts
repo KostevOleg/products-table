@@ -7,9 +7,15 @@ import { map } from 'rxjs';
 })
 export class ProductsService{
   http = inject(HttpClient);
-  getProducts(page:number, limit : number){
+  getProducts(params : {
+    page:number,
+    limit:number,
+    category?: string | null
+  }){
+    const {page, limit, category} = params
     let skip = page  * limit;
-    return  this.http.get<ServerResponse>(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`)
+    const baseUrl = category ? `https://dummyjson.com/products/category/${category}?limit=${limit}&skip=${skip}` : `https://dummyjson.com/products?limit=${limit}&skip=${skip}`
+    return  this.http.get<ServerResponse>(baseUrl)
   }
   getProduct(id:number){
     return this.http.get<Product>(`https://dummyjson.com/products/${id}`)

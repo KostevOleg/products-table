@@ -5,55 +5,85 @@
   </div>
 } @else {
   <h1 class="table-title">All products</h1>
-<h4>Items on page</h4>
-<input 
-  class="input" 
-  [value]="productsOnPage()"
-  (input)="productsOnPage.set(+($any($event.target).value)); page.set(0)"  
-  type="number"/>
+  
+  <form [formGroup]="filterForm" class="filters" (submit)="applyFilters()">
+    <label for="productsOnPage">Items on page</label>
+    <input 
+      formControlName="limit"
+      id="productsOnPage"
+      class="input" 
+      type="number"/>
 
-@let productsList = products();
-@let pages = visiblePages();
-@if (productsList?.length) {
-  <table class="products-table">
-    <thead class="products-table__head">
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Price</th>
-        <th scope="col">Rating</th>
-        <th scope="col">In stock</th>
-        <th scope="col">Brad</th>
-        <th scope="col">Category</th>
-      </tr>
-    </thead>
+    <label for="category">Category</label>
+    <select formControlName="category" id="category" name="category">
+      <option value="">All categories</option>
+      <option value="smartphones">smartphones</option>
+      <option value="laptops">laptops</option>
+      <option value="fragrances">fragrances</option>
+      <option value="skincare">skincare</option>
+      <option value="groceries">groceries</option>
+      <option value="home-decoration">home-decoration</option>
+      <option value="furniture">furniture</option>
+      <option value="tops">tops</option>
+      <option value="womens-dresses">womens-dresses</option>
+      <option value="womens-shoes">womens-shoes</option>
+      <option value="mens-shirts">mens-shirts</option>
+      <option value="mens-shoes">mens-shoes</option>
+      <option value="mens-watches">mens-watches</option>
+      <option value="womens-watches">womens-watches</option>
+      <option value="womens-bags">womens-bags</option>
+      <option value="womens-jewellery">womens-jewellery</option>
+      <option value="sunglasses">sunglasses</option>
+      <option value="automotive">automotive</option>
+      <option value="motorcycle">motorcycle</option>
+      <option value="lighting">lighting</option>
+    </select>
+  <button type="submit">Apply</button>
+  <button type="reset" (click)="resetFilters()">Reset</button>
+</form>
 
-    <tbody class="products-table__body">
-      @for (product of productsList; track product.id) {
-        <tr class="products-table__row products-table__row.clickable" (click)="goToProduct(product.id)">
-            <td>{{ product.id }}</td>
-            <td class="products-table__title">{{ product.title }}</td>
-            <td>{{ product.price }} $</td>
-            <td>{{ product.rating }}</td>
-            <td>{{ product.stock }}</td>
-            <td>{{ product.brand }}</td>
-            <td>{{ product.category }}</td>
+  @let productsList = products();
+  @let pages = visiblePages();
+  @if (productsList?.length) {
+    <table class="products-table">
+      <thead class="products-table__head">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Rating</th>
+          <th scope="col">In stock</th>
+          <th scope="col">Brad</th>
+          <th scope="col">Category</th>
         </tr>
-      }
-    </tbody>
-  </table>
-}
-<div class="pagin">
-    <button (click)="previousPage()" >←</button>
-    <div class="pagin-inner">
-      @for(p of pages; track p){
-        <span (click)="goTo(p)" [class.active]="p === page()">{{p + 1}}</span>
-      }
-    </div>
-     <button (click)="nextPage()">→</button>
-</div>
+      </thead>
 
-}
+      <tbody class="products-table__body">
+        @for (product of productsList; track product.id) {
+          <tr class="products-table__row products-table__row.clickable" (click)="goToProduct(product.id)">
+              <td>{{ product.id }}</td>
+              <td class="products-table__title">{{ product.title }}</td>
+              <td>{{ product.price }} $</td>
+              <td>{{ product.rating }}</td>
+              <td>{{ product.stock }}</td>
+              <td>{{ product.brand }}</td>
+              <td>{{ product.category }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  <div class="pagin">
+      <button (click)="previousPage()" >←</button>
+      <div class="pagin-inner">
+        @for(p of pages; track p){
+          <span (click)="goTo(p)" [class.active]="p === page()">{{p + 1}}</span>
+        }
+      </div>
+      <button (click)="nextPage()">→</button>
+  </div>
+
+  }
 
 
 

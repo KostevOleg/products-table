@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import {ProductsService, Product} from '../../services/FetchService';
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink,QueryParamsHandling} from "@angular/router";
 import { toSignal } from '@angular/core/rxjs-interop'
 import { finalize } from 'rxjs';
 
