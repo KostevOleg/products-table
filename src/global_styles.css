@@ -1,1 +1,26 @@
-/* Add application styles & imports to this file! */
+body {
+  background: #f5f1fb;
+  height: 100%;
+  margin: 0;
+}
+
+:host {
+  display: block;
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  color: #2a2233;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+}
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.main-content {
+  flex: 1; 
+}

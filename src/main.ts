@@ -2,11 +2,11 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import {provideHttpClient} from '@angular/common/http';
 import {provideRouter, Routes} from '@angular/router';
 import {AppComponent} from './app-component';
-import {MainComponent} from './components/main-component/main-component';
-import {ProductDetailsComponent} from './components/product-detail/product-details';
+import {MainComponent} from './components/products-component/products-component';
+import {ProductDetailsComponent} from './components/product-details/product-details';
 const routes: Routes = [
   {
-    path: '',
+    path: 'product',
     component: MainComponent
   },
   {

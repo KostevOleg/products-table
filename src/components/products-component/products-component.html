@@ -49,10 +49,19 @@
       <thead class="products-table__head">
         <tr>
           <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Rating</th>
-          <th scope="col">In stock</th>
+          <th scope="col" class="col-title">Name</th>
+          <th scope="col" (click)="toggleSort('price')">Price
+             @if(sortBy() === 'price') {
+              <span>{{ order() === 'asc' ? '▲' : '▼' }}</span>}
+            </th>
+          <th scope="col" (click)="toggleSort('rating')">Rating
+             @if(sortBy() === 'rating') {
+              <span>{{ order() === 'asc' ? '▲' : '▼' }}</span>}
+            </th>
+          <th scope="col" (click)="toggleSort('stock')">In stock
+             @if(sortBy() === 'stock') {
+              <span>{{ order() === 'asc' ? '▲' : '▼' }}</span>}
+          </th>
           <th scope="col">Brad</th>
           <th scope="col">Category</th>
         </tr>
@@ -60,7 +69,7 @@
 
       <tbody class="products-table__body">
         @for (product of productsList; track product.id) {
-          <tr class="products-table__row products-table__row.clickable" (click)="goToProduct(product.id)">
+          <tr class="products-table__row clickable" (click)="goToProduct(product.id)">
               <td>{{ product.id }}</td>
               <td class="products-table__title">{{ product.title }}</td>
               <td>{{ product.price }} $</td>
@@ -72,6 +81,10 @@
         }
       </tbody>
     </table>
+  } @else { 
+    <div class="empty-state">
+    <p>No products found</p>
+  </div>
   }
   <div class="pagin">
       <button (click)="previousPage()" >←</button>

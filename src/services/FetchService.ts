@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -10,12 +10,29 @@ export class ProductsService{
   getProducts(params : {
     page:number,
     limit:number,
-    category?: string | null
+    category?: string | null,
+    sortBy?:string | null,
+    order?: 'asc' | "desc" | null,
   }){
-    const {page, limit, category} = params
+    const {page, limit, category, sortBy , order} = params;
+    const baseUrl = category ? `https://dummyjson.com/products/category/${category}` : 
+    `https://dummyjson.com/products`;
+
     let skip = page  * limit;
-    const baseUrl = category ? `https://dummyjson.com/products/category/${category}?limit=${limit}&skip=${skip}` : `https://dummyjson.com/products?limit=${limit}&skip=${skip}`
-    return  this.http.get<ServerResponse>(baseUrl)
+    
+    let httpParams = new HttpParams()
+    .set('limit' , limit)
+    .set('skip', skip)
+    
+    if(sortBy){
+      httpParams = httpParams.set('sortBy', sortBy)
+      if(order){
+        httpParams = httpParams.set('order', order)
+      }
+    }
+    return  this.http.get<ServerResponse>(baseUrl, {
+      params: httpParams
+    })
   }
   getProduct(id:number){
     return this.http.get<Product>(`https://dummyjson.com/products/${id}`)
