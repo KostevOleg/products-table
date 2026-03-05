@@ -1,1 +1,65 @@
-<p>landing-component works!</p>
+<section class="promo">
+  <div class="promo__container">
+    <div class="promo__content">
+      <p class="promo__badge">Lavanda Shop</p>
+
+      <h1 class="promo__title">
+        Calm your space. Lavender your day.
+      </h1>
+
+      <p class="promo__text">
+        Discover lavender-inspired products made to bring softness, comfort,
+        and a peaceful mood to your home.
+      </p>
+
+      <p class="promo__text promo__text--muted">
+        Minimal design, gentle aromas, and a cozy vibe — all in one place.
+      </p>
+    </div>
+  </div>
+</section>
+<section class="carousel">
+  @let products = promoProducts();
+
+  <div class="carousel__container">
+
+    <h2 class="carousel__title">Featured Products</h2>
+
+    <div class="carousel__shell">
+      <button class="carousel__button carousel__button--prev" (click)="prevSlide()">Prev</button>
+
+      <div class="carousel__viewport">
+        <div class="carousel__track" [style.transform]="translate()">
+              @for(product of products; track product.id){
+                <a [routerLink]="['/product', product.id]" class="carousel__slide">
+                  <div class="carousel__card">
+
+                <div class="carousel__image">
+                  <img [src]="product.thumbnail" [alt]="product.title">
+                </div>
+
+                <div class="carousel__info">
+                  <h3 class="carousel__product-title">
+                    {{ product.title }}
+                  </h3>
+
+                  <p class="carousel__price">
+                    ${{ product.price }}
+                  </p>
+                </div>
+
+              </div>
+                </a>
+              }
+        </div>
+      </div>
+
+      <button class="carousel__button carousel__button--next" (click)="nexSlide()">Next</button>
+    </div>
+
+    <div class="carousel__dots">
+      ...
+    </div>
+
+  </div>
+</section>

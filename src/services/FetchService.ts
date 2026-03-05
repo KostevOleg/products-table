@@ -34,6 +34,16 @@ export class ProductsService{
       params: httpParams
     })
   }
+  getRandomProducts(quat:number){
+    let skip =  Math.floor(Math.random()  * 160)
+    let httpParams = new HttpParams()
+    .set('limit', quat)
+    .set('skip', skip )
+    return this.http.get<ServerResponse>('https://dummyjson.com/products/', {
+       params: httpParams
+    }
+    )
+  }
   getProduct(id:number){
     return this.http.get<Product>(`https://dummyjson.com/products/${id}`)
   }
