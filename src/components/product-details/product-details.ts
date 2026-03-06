@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {ProductsService, Product} from '../../services/FetchService';
 import {ActivatedRoute, RouterLink,QueryParamsHandling} from "@angular/router";
 import { toSignal } from '@angular/core/rxjs-interop'
@@ -9,7 +9,8 @@ import { finalize } from 'rxjs';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './product-details.html',
-  styleUrl: './product-details.scss'
+  styleUrl: './product-details.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetailsComponent {
   http = inject(ProductsService);
@@ -28,6 +29,9 @@ export class ProductDetailsComponent {
 
 setImage(url: string) {
   this.selectedImage.set(url);
+}
+goBack(){
+  history.back()
 }
 
 }

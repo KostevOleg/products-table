@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import {RouterLink, RouterLinkActive} from "@angular/router"
 
 @Component({
   selector: 'app-footer-component',
-  imports: [RouterLink, RouterLinkActive ],
+  imports: [],
   standalone:true,
   templateUrl: './footer.html',
   styleUrl: './footer.scss',

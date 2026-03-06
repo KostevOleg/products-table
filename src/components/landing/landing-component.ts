@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import {ProductsService, Product} from '../../services/FetchService'
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {ProductsService} from '../../services/FetchService'
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import {RouterLink} from '@angular/router'
@@ -10,6 +10,7 @@ import {RouterLink} from '@angular/router'
   standalone:true,
   templateUrl: './landing-component.html',
   styleUrl: './landing-component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
   http = inject(ProductsService)

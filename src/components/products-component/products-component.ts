@@ -1,17 +1,19 @@
-  import { Component, computed, inject, OnInit, signal } from '@angular/core';
+  import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
   import {ProductsService,} from '../../services/FetchService';
   import { toObservable, toSignal } from '@angular/core/rxjs-interop'
   import { map, switchMap, tap, distinctUntilChanged, debounceTime, finalize } from 'rxjs';
   import {ReactiveFormsModule} from "@angular/forms";
   import {Router, ActivatedRoute} from "@angular/router";
   import { FormBuilder } from '@angular/forms';
+  
 
   @Component({
     selector: 'app-main-comp',
     standalone: true,
     imports: [ReactiveFormsModule],
     templateUrl: './products-component.html',
-    styleUrl: './products-component.scss'
+    styleUrl: './products-component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
   })
   export class MainComponent  implements OnInit{
     ngOnInit(): void {
