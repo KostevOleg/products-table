@@ -35,8 +35,8 @@ export class LandingComponent {
       ),
       {initialValue: []}
   )
-  nexSlide(){
-    let current = this.currentIndex();
+  nextSlide(){
+    const current = this.currentIndex();
     const maxIndex = this.maxIndex();
     if(maxIndex ===0) return
     if(current === maxIndex){
@@ -46,7 +46,7 @@ export class LandingComponent {
       this.currentIndex.update(v => v + 1)
   }
   prevSlide(){
-    let current = this.currentIndex();
+    const current = this.currentIndex();
     const maxIndex = this.maxIndex();
     if(maxIndex ===0) return
     if(current <= 0) {

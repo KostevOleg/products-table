@@ -37,6 +37,16 @@
             "tsConfig": "tsconfig.app.json"
           }
         },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "runner": "vitest",
+            "include": [
+              "src/**/*.spec.ts"
+            ]
+          }
+        },
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {

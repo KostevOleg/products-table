@@ -1,7 +1,7 @@
 <section class="promo">
   <div class="promo__container">
     <div class="promo__content">
-      <p class="promo__badge">Lavanda Shop</p>
+      <p class="promo__badge">Lavender Shop</p>
 
       <h1 class="promo__title">
         Calm your space. Lavender your day.
@@ -13,16 +13,16 @@
       </p>
 
       <p class="promo__text promo__text--muted">
-        Minimal design, gentle aromas, and a cozy vibe — all in one place.
+        Minimal design, gentle aromas, and a cozy vibe, all in one place.
       </p>
     </div>
   </div>
 </section>
+
 <section class="carousel">
   @let products = promoProducts();
 
   <div class="carousel__container">
-
     <h2 class="carousel__title">Featured Products</h2>
 
     <div class="carousel__shell">
@@ -30,12 +30,11 @@
 
       <div class="carousel__viewport">
         <div class="carousel__track" [style.transform]="translate()">
-              @for(product of products; track product.id){
-                <a [routerLink]="['/product', product.id]" class="carousel__slide">
-                  <div class="carousel__card">
-
+          @for (product of products; track product.id) {
+            <a [routerLink]="['/product', product.id]" class="carousel__slide">
+              <div class="carousel__card">
                 <div class="carousel__image">
-                  <img [src]="product.thumbnail" [alt]="product.title">
+                  <img [src]="product.thumbnail" [alt]="product.title" />
                 </div>
 
                 <div class="carousel__info">
@@ -47,19 +46,13 @@
                     ${{ product.price }}
                   </p>
                 </div>
-
               </div>
-                </a>
-              }
+            </a>
+          }
         </div>
       </div>
 
-      <button class="carousel__button carousel__button--next" (click)="nexSlide()">Next</button>
+      <button class="carousel__button carousel__button--next" (click)="nextSlide()">Next</button>
     </div>
-
-    <div class="carousel__dots">
-      ...
-    </div>
-
   </div>
 </section>

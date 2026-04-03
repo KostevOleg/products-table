@@ -7,6 +7,8 @@ import { map } from 'rxjs';
 })
 export class ProductsService{
   http = inject(HttpClient);
+  readonly baseUrl = 'https://dummyjson.com/products';
+
   getProducts(params : {
     page:number,
     limit:number,
@@ -15,10 +17,9 @@ export class ProductsService{
     order?: 'asc' | "desc" | null,
   }){
     const {page, limit, category, sortBy , order} = params;
-    const baseUrl = category ? `https://dummyjson.com/products/category/${category}` : 
-    `https://dummyjson.com/products`;
+    const baseUrl = category ? `${this.baseUrl}/category/${category}` : this.baseUrl;
 
-    let skip = page  * limit;
+    const skip = page * limit;
     
     let httpParams = new HttpParams()
     .set('limit' , limit)
@@ -34,18 +35,19 @@ export class ProductsService{
       params: httpParams
     })
   }
-  getRandomProducts(quat:number){
-    let skip =  Math.floor(Math.random()  * 160)
-    let httpParams = new HttpParams()
-    .set('limit', quat)
-    .set('skip', skip )
-    return this.http.get<ServerResponse>('https://dummyjson.com/products/', {
+  getRandomProducts(quantity:number){
+    const skip = Math.floor(Math.random() * 160);
+    const httpParams = new HttpParams()
+    .set('limit', quantity)
+    .set('skip', skip );
+
+    return this.http.get<ServerResponse>(this.baseUrl, {
        params: httpParams
     }
     )
   }
   getProduct(id:number){
-    return this.http.get<Product>(`https://dummyjson.com/products/${id}`)
+    return this.http.get<Product>(`${this.baseUrl}/${id}`)
   }
 }
 

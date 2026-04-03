@@ -2,13 +2,9 @@
 :host {
   display: block;
   padding: 20px;
-  background: #f5f1fb; /* soft lavender background */
+  background: #f5f1fb;
   color: #2a2233;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-}
-.products-table {
-  width: 1420px;
-  margin: 0 auto; 
 }
 
 .table-title {
@@ -134,11 +130,7 @@
 
 .products-table__row.clickable {
   cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.products-table__row.clickable:hover {
-  background: rgba(164, 139, 224, 0.08);
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .products-table__title {
@@ -235,12 +227,6 @@
     transform: rotate(360deg);
   }
 }
-.products-table__row.clickable:hover {
-  background: #d9ccff;
-}
-.products-table__row.clickable {
-  transition: background 0.15s ease, transform 0.15s ease;
-}
 
 .products-table__row.clickable:hover {
   background: #d9ccff;
@@ -249,10 +235,9 @@
 .products-table__row.clickable:hover td {
   background: transparent;
 }
+
 .col-title {
-  width: 360px;        
-  // min-width: 260px;
-  // max-width: 260px;
+  width: 360px;
 }
 
 .products-table__title {
