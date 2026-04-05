@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ProductsService } from '../../services/FetchService';
@@ -14,7 +14,21 @@ describe('MainComponent', () => {
   const productsServiceStub = {
     getProducts: () =>
       of({
-        products: [],
+        products: [
+          {
+            id: 1,
+            title: 'Laptop',
+            description: 'Portable',
+            price: 1000,
+            discountPercentage: 5,
+            rating: 4.8,
+            stock: 7,
+            brand: 'Tech',
+            category: 'laptops',
+            thumbnail: 'thumb.jpg',
+            images: [],
+          },
+        ],
         total: 35,
         skip: 0,
         limit: 10,
@@ -39,10 +53,71 @@ describe('MainComponent', () => {
     component.ngOnInit();
 
     expect(component.page()).toBe(1);
-    expect(component.productsOnPage()).toBe(10);
-    expect(component.category()).toBe('laptops');
+    expect(component.store.limit()).toBe(10);
+    expect(component.store.category()).toBe('laptops');
     expect(component.sortBy()).toBe('price');
     expect(component.order()).toBe('asc');
+  });
+
+  it('renders loaded products in the table', () => {
+    const fixture = TestBed.createComponent(MainComponent);
+
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('.table-title')?.textContent).toContain('All products');
+    expect(host.querySelectorAll('tbody tr')).toHaveLength(1);
+    expect(host.textContent).toContain('Laptop');
+  });
+
+  it('shows an empty state when the api returns no products', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [MainComponent],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        {
+          provide: ProductsService,
+          useValue: {
+            getProducts: () =>
+              of({
+                products: [],
+                total: 0,
+                skip: 0,
+                limit: 10,
+              }),
+          },
+        },
+      ],
+    });
+
+    const fixture = TestBed.createComponent(MainComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('No products found');
+  });
+
+  it('shows an error state when loading fails', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [MainComponent],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        {
+          provide: ProductsService,
+          useValue: {
+            getProducts: () => throwError(() => new Error('network')),
+          },
+        },
+      ],
+    });
+
+    const fixture = TestBed.createComponent(MainComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Unable to load products');
   });
 
   it('resets page number when applying filters', async () => {
@@ -52,7 +127,7 @@ describe('MainComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.filterForm.setValue({ category: 'groceries', limit: 20 });
-    component.page.set(3);
+    component.store.updateStore({ page: 3 });
 
     component.applyFilters();
 
@@ -62,28 +137,76 @@ describe('MainComponent', () => {
         page: 0,
         limit: 20,
         category: 'groceries',
-        sortBy: null,
-        order: null,
       },
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   });
 
-  it('cycles sorting state between asc, desc, and none', () => {
+  it('resets filters and sorting to defaults', () => {
+    const fixture = TestBed.createComponent(MainComponent);
+    const component = fixture.componentInstance;
+    const updateQuerySpy = vi.spyOn(component, 'updateQuery');
+
+    component.filterForm.setValue({ category: 'groceries', limit: 20 });
+    component.resetFilters();
+
+    expect(component.filterForm.getRawValue()).toEqual({
+      category: '',
+      limit: 10,
+    });
+    expect(updateQuerySpy).toHaveBeenCalledWith({
+      page: 0,
+      category: null,
+      limit: 10,
+      sortBy: null,
+      order: null,
+    });
+  });
+
+  it('normalizes invalid query params to safe defaults', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [MainComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: of({ page: -2, limit: 0 }),
+          },
+        },
+        { provide: ProductsService, useValue: productsServiceStub },
+      ],
+    });
+
+    const fixture = TestBed.createComponent(MainComponent);
+    const component = fixture.componentInstance;
+
+    component.ngOnInit();
+
+    expect(component.page()).toBe(0);
+    expect(component.store.limit()).toBe(10);
+  });
+
+  it('toggles sorting between asc and desc for the same field', () => {
     const fixture = TestBed.createComponent(MainComponent);
     const component = fixture.componentInstance;
     const updateQuerySpy = vi.spyOn(component, 'updateQuery');
 
     component.toggleSort('price');
-    expect(component.sortBy()).toBe('price');
-    expect(component.order()).toBe('asc');
+    expect(updateQuerySpy).toHaveBeenNthCalledWith(1, {
+      page: 0,
+      sortBy: 'price',
+      order: 'asc',
+    });
 
+    component.store.updateStore({ sortBy: 'price', order: 'asc' });
     component.toggleSort('price');
-    expect(component.order()).toBe('desc');
-
-    component.toggleSort('price');
-    expect(component.order()).toBe(null);
-    expect(updateQuerySpy).toHaveBeenCalledTimes(3);
+    expect(updateQuerySpy).toHaveBeenNthCalledWith(2, {
+      page: 0,
+      sortBy: 'price',
+      order: 'desc',
+    });
   });
 });

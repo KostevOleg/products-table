@@ -1,0 +1,33 @@
+<div class="pagin">
+  <button
+    type="button"
+    aria-label="Previous page"
+    [disabled]="page === 0"
+    (click)="previousPage()"
+  >
+    &larr;
+  </button>
+
+  <div class="pagin-inner">
+    @for (p of visiblePages; track p) {
+      <button
+        type="button"
+        class="pagin-page"
+        [class.active]="p === page"
+        [attr.aria-current]="p === page ? 'page' : null"
+        (click)="goToPage(p)"
+      >
+        {{ p + 1 }}
+      </button>
+    }
+  </div>
+
+  <button
+    type="button"
+    aria-label="Next page"
+    [disabled]="page >= totalPages - 1"
+    (click)="nextPage()"
+  >
+    &rarr;
+  </button>
+</div>

@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs';
-
-import { ProductsService } from '../../services/FetchService';
+import { ProductsStore } from '../../store/store';
+import { PaginationComponent } from '../pagination/pagination-component';
+import { ProductsQuery } from '../models/query-model';
 
 @Component({
   selector: 'app-main-comp',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PaginationComponent],
   templateUrl: './products-component.html',
   styleUrl: './products-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,122 +38,63 @@ export class MainComponent implements OnInit {
     'lighting',
   ] as const;
 
-  readonly productService = inject(ProductsService);
+  readonly store = inject(ProductsStore);
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly fb = inject(FormBuilder);
+  readonly destroyRef = inject(DestroyRef);
 
-  readonly loading = signal(true);
-  readonly productsOnPage = signal(10);
-  readonly page = signal(0);
-  readonly totalPages = signal(0);
-  readonly category = signal<string | null>(null);
-  readonly sortBy = signal<string | null>(null);
-  readonly order = signal<'asc' | 'desc' | null>(null);
-
+  readonly loading = this.store.isLoading;
+  readonly hasError = this.store.hasError;
+  readonly page = this.store.page;
+  readonly totalPages = this.store.totalPages;
+  readonly sortBy = this.store.sortBy;
+  readonly order = this.store.order;
+  readonly products = this.store.products;
   readonly visiblePages = computed(() => {
     const current = this.page();
     const last = this.totalPages() - 1;
-    const pages = new Set<number>([current, current + 1, current + 2, current - 1, 0, last]);
+    const pages = new Set([0, current - 1, current, current + 1, current + 2, last]);
 
     return Array.from(pages)
-      .filter((pageNumber) => pageNumber >= 0 && pageNumber <= last)
-      .sort((left, right) => left - right);
+      .filter((p) => p >= 0 && p <= last)
+      .sort((a, b) => a - b);
   });
 
-  readonly params = computed(() => ({
-    page: this.page(),
-    limit: this.productsOnPage(),
-    category: this.category(),
-    sortBy: this.sortBy(),
-    order: this.order(),
-  }));
 
   readonly filterForm = this.fb.group({
     category: [''],
     limit: [10],
   });
 
-  readonly params$ = toObservable(this.params);
-
-  readonly products = toSignal(
-    this.params$.pipe(
-      debounceTime(600),
-      distinctUntilChanged(
-        (previous, current) =>
-          previous.page === current.page &&
-          previous.limit === current.limit &&
-          previous.category === current.category &&
-          previous.sortBy === current.sortBy &&
-          previous.order === current.order,
-      ),
-      switchMap(({ page, limit, category, sortBy, order }) => {
-        this.loading.set(true);
-
-        return this.productService.getProducts({ page, limit, category, sortBy, order }).pipe(
-          tap((response) => {
-            const totalPages = Math.ceil(response.total / limit);
-            this.totalPages.set(totalPages);
-          }),
-          map((response) => response.products),
-          finalize(() => {
-            this.loading.set(false);
-          }),
-        );
-      }),
-    ),
-    { initialValue: [] },
-  );
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      const page = +params['page'] || 0;
-      const limit = +params['limit'] || 10;
-      const category = params['category'] || '';
-      const sortBy = params['sortBy'] || '';
-      const order = params['order'] || '';
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const query: ProductsQuery = {
+          page: this.parsePage(params['page']),
+          limit: this.parseLimit(params['limit']),
+          category: params['category'] || null,
+          sortBy: params['sortBy'] || null,
+          order: params['order'] === 'asc' || params['order'] === 'desc'
+            ? params['order']
+            : null,
+        };
 
-      this.page.set(page);
-      this.productsOnPage.set(limit);
-      this.category.set(category);
-      this.sortBy.set(sortBy);
-      this.order.set(order);
-      this.filterForm.patchValue({ category, limit }, { emitEvent: false });
-    });
+        this.store.updateStore(query);
+        this.filterForm.patchValue(
+          { category: query.category ?? '', limit: query.limit },
+          { emitEvent: false },
+        );
+        this.store.loadProducts(query);
+      });
   }
 
-  goTo(page: number): void {
-    this.updateQuery(page);
-  }
-
-  previousPage(): void {
-    const currentPage = this.page();
-    if (currentPage <= 0) {
-      return;
-    }
-
-    this.updateQuery(currentPage - 1);
-  }
-
-  nextPage(): void {
-    const currentPage = this.page();
-    if (currentPage >= this.totalPages() - 1) {
-      return;
-    }
-
-    this.updateQuery(currentPage + 1);
-  }
-
-  updateQuery(
-    page: number,
-    limit = this.productsOnPage(),
-    category: string | null = this.category(),
-    sortBy: string | null = this.sortBy(),
-    order: 'asc' | 'desc' | null = this.order(),
-  ): void {
+  updateQuery(params: Partial<ProductsQuery>): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { page, limit, category, sortBy, order },
+      queryParams: params,
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
@@ -167,22 +108,45 @@ export class MainComponent implements OnInit {
 
   applyFilters(): void {
     const { category, limit } = this.filterForm.value;
-    this.updateQuery(0, limit ?? 10, category || null);
+    this.updateQuery({
+      page: 0,
+      category: category || null,
+      limit: this.parseLimit(limit),
+    });
   }
 
   resetFilters(): void {
     this.filterForm.reset({ category: '', limit: 10 });
-    this.updateQuery(0, 10, null, null, null);
+    this.updateQuery({
+      page: 0,
+      category: null,
+      limit: 10,
+      sortBy: null,
+      order: null,
+    });
+  }
+
+  onPaginationChange(page: number): void {
+    this.updateQuery({ page });
   }
 
   toggleSort(field: string): void {
-    if (this.sortBy() !== field) {
-      this.sortBy.set(field);
-      this.order.set('asc');
-    } else {
-      this.order.set(this.order() === 'asc' ? 'desc' : null);
+    if (this.sortBy() === field) {
+      const nextOrder = this.order() === 'asc' ? 'desc' : 'asc';
+      this.updateQuery({ page: 0, sortBy: field, order: nextOrder });
+      return;
     }
 
-    this.updateQuery(0, this.productsOnPage(), this.category(), this.sortBy(), this.order());
+    this.updateQuery({ page: 0, sortBy: field, order: 'asc' });
+  }
+
+  private parsePage(value: unknown): number {
+    const page = Number(value);
+    return Number.isInteger(page) && page >= 0 ? page : 0;
+  }
+
+  private parseLimit(value: unknown): number {
+    const limit = Number(value);
+    return Number.isInteger(limit) && limit > 0 ? limit : 10;
   }
 }

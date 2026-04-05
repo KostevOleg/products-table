@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import {ProductsService} from '../../services/FetchService'
+import { ProductsService } from '../../services/FetchService';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import {RouterLink} from '@angular/router'
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-landing-component',
@@ -13,46 +13,53 @@ import {RouterLink} from '@angular/router'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
-  http = inject(ProductsService)
-  currentIndex = signal(0);
-  cardWidth = 310;
-  gap = 24;
-  visible = signal(4);
-  step = computed(()=>{
-    return this.cardWidth + this.gap;
-  }) 
-  maxIndex = computed(()=>{
+  readonly http = inject(ProductsService);
+  readonly currentIndex = signal(0);
+  readonly cardWidth = 310;
+  readonly gap = 24;
+  readonly visible = signal(4);
+  readonly step = computed(() => this.cardWidth + this.gap);
+  readonly maxIndex = computed(() => {
     const total = this.promoProducts().length;
-    return Math.max(total - this.visible(), 0)
-  })  
-  translate = computed(()=>{
-    return `translateX(-${this.currentIndex() * this.step()}px)`
-  })
+    return Math.max(total - this.visible(), 0);
+  });
+  readonly translate = computed(() => `translateX(-${this.currentIndex() * this.step()}px)`);
 
-  promoProducts = toSignal(
-      this.http.getRandomProducts(12).pipe(
-        map(data => data.products)
-      ),
-      {initialValue: []}
-  )
-  nextSlide(){
+  readonly promoProducts = toSignal(
+    this.http.getRandomProducts(12).pipe(
+      map((data) => data.products),
+    ),
+    { initialValue: [] },
+  );
+
+  nextSlide(): void {
     const current = this.currentIndex();
     const maxIndex = this.maxIndex();
-    if(maxIndex ===0) return
-    if(current === maxIndex){
-      this.currentIndex.set(0)
-      return
+
+    if (maxIndex === 0) {
+      return;
     }
-      this.currentIndex.update(v => v + 1)
+
+    if (current === maxIndex) {
+      this.currentIndex.set(0);
+      return;
+    }
+
+    this.currentIndex.update((value) => value + 1);
   }
-  prevSlide(){
-    const current = this.currentIndex();
+
+  prevSlide(): void {
     const maxIndex = this.maxIndex();
-    if(maxIndex ===0) return
-    if(current <= 0) {
-        this.currentIndex.set(maxIndex);
-        return
+
+    if (maxIndex === 0) {
+      return;
     }
-    this.currentIndex.update(v => Math.max(v -1, 0))
+
+    if (this.currentIndex() <= 0) {
+      this.currentIndex.set(maxIndex);
+      return;
+    }
+
+    this.currentIndex.update((value) => Math.max(value - 1, 0));
   }
 }

@@ -3,12 +3,16 @@
     <div class="spinner"></div>
     <p>Loading...</p>
   </div>
+} @else if (hasError()) {
+  <div class="empty-state">
+    <p>Unable to load products. Please try again.</p>
+  </div>
 } @else {
   <h1 class="table-title">All products</h1>
 
   <form [formGroup]="filterForm" class="filters" (submit)="applyFilters()">
     <label for="productsOnPage">Items on page</label>
-    <input formControlName="limit" id="productsOnPage" class="input" type="number" />
+    <input formControlName="limit" id="productsOnPage" class="input" type="number" min="1" />
 
     <label for="category">Category</label>
     <select formControlName="category" id="category" name="category">
@@ -22,9 +26,7 @@
     <button type="reset" (click)="resetFilters()">Reset</button>
   </form>
 
-  @let productsList = products();
-  @let pages = visiblePages();
-  @if (productsList?.length) {
+  @if (products().length) {
     <table class="products-table">
       <thead class="products-table__head">
         <tr>
@@ -33,19 +35,19 @@
           <th scope="col" (click)="toggleSort('price')">
             Price
             @if (sortBy() === 'price') {
-              <span aria-hidden="true">{{ order() === 'asc' ? '▲' : '▼' }}</span>
+              <span aria-hidden="true">{{ order() === 'asc' ? '↑' : '↓' }}</span>
             }
           </th>
           <th scope="col" (click)="toggleSort('rating')">
             Rating
             @if (sortBy() === 'rating') {
-              <span aria-hidden="true">{{ order() === 'asc' ? '▲' : '▼' }}</span>
+              <span aria-hidden="true">{{ order() === 'asc' ? '↑' : '↓' }}</span>
             }
           </th>
           <th scope="col" (click)="toggleSort('stock')">
             In stock
             @if (sortBy() === 'stock') {
-              <span aria-hidden="true">{{ order() === 'asc' ? '▲' : '▼' }}</span>
+              <span aria-hidden="true">{{ order() === 'asc' ? '↑' : '↓' }}</span>
             }
           </th>
           <th scope="col">Brand</th>
@@ -54,7 +56,7 @@
       </thead>
 
       <tbody class="products-table__body">
-        @for (product of productsList; track product.id) {
+        @for (product of products(); track product.id) {
           <tr class="products-table__row clickable" (click)="goToProduct(product.id)">
             <td>{{ product.id }}</td>
             <td class="products-table__title">{{ product.title }}</td>
@@ -72,14 +74,13 @@
       <p>No products found</p>
     </div>
   }
+}
 
-  <div class="pagin">
-    <button type="button" aria-label="Previous page" (click)="previousPage()">←</button>
-    <div class="pagin-inner">
-      @for (p of pages; track p) {
-        <span (click)="goTo(p)" [class.active]="p === page()">{{ p + 1 }}</span>
-      }
-    </div>
-    <button type="button" aria-label="Next page" (click)="nextPage()">→</button>
-  </div>
+@if (!loading() && !hasError() && totalPages() > 1) {
+  <app-pagination-component
+    [page]="page()"
+    [totalPages]="totalPages()"
+    [visiblePages]="visiblePages()"
+    (pageChange)="onPaginationChange($event)"
+  ></app-pagination-component>
 }

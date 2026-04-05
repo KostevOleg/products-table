@@ -7,7 +7,7 @@
 } @else if (!prod) {
   <div class="fullscreen-loader">
     <p>Unable to load the product.</p>
-    <button [routerLink]="['/']" class="btn btn-back">
+    <button type="button" [routerLink]="['/']" class="btn btn-back">
       Back to the table
     </button>
   </div>
@@ -39,7 +39,8 @@
         <h1 class="title">{{ prod.title }}</h1>
 
         <div class="rating">
-          ★ {{ prod.rating }}
+          <span aria-hidden="true">&#9733;</span>
+          {{ prod.rating }}
         </div>
 
         <div class="price-block">
@@ -56,15 +57,14 @@
           <div><strong>Stock:</strong> <span class="in-stock">{{ prod.stock }}</span></div>
         </div>
 
-        <div class="tags">
-          @for (tag of prod.tags; track tag) {
-            <span>{{ tag }}</span>
-          }
-        </div>
+        @if (prod.tags?.length) {
+          <div class="tags">
+            @for (tag of prod.tags; track tag) {
+              <span>{{ tag }}</span>
+            }
+          </div>
+        }
 
-        <button class="btn">
-          Add to Cart
-        </button>
         <button type="button" (click)="goBack()" class="btn btn-back">
           Back
         </button>
