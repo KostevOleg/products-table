@@ -3,8 +3,10 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-
-import { Product, ProductsService } from '../../services/FetchService';
+import { Product } from '../../models/product-model';
+import { ProductsService } from '../../services/FetchService';
+import { CartStore} from '../../stores/cart-store/cart-store';
+import { CartItem } from '../../models/cart-model';
 
 @Component({
   selector: 'app-productdetails',
@@ -18,6 +20,7 @@ export class ProductDetailsComponent {
   readonly http = inject(ProductsService);
   readonly location = inject(Location);
   readonly activeRoute = inject(ActivatedRoute);
+  readonly cartStore = inject(CartStore)
   readonly loading = signal(true);
   readonly id = Number(this.activeRoute.snapshot.paramMap.get('id'));
 
@@ -34,6 +37,10 @@ export class ProductDetailsComponent {
 
   setImage(url: string): void {
     this.selectedImage.set(url);
+  }
+
+  addToCart(prod:CartItem){
+    this.cartStore.updateCart(prod)
   }
 
   goBack(): void {

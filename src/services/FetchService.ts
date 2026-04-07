@@ -1,4 +1,5 @@
 import {inject, Injectable} from '@angular/core';
+import { ServerResponse, Product } from '../models/product-model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
@@ -48,32 +49,4 @@ export class ProductsService{
   getProduct(id:number){
     return this.http.get<Product>(`${this.baseUrl}/${id}`)
   }
-}
-
-export interface ServerResponse {
-  products: Product[],
-  total: number,
-  skip: number,
-  limit: number,
-}
-
-export interface Product {
-  id: number;
-  title: string;
-  description: string;
-
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-
-  brand: string;
-  category: string;
-
-  thumbnail: string;
-  images: string[];
-
-  tags?: string[];
-  warrantyInformation?: string;
-  shippingInformation?: string;
 }

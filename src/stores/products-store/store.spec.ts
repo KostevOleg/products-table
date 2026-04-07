@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { throwError, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ProductsService } from '../services/FetchService';
-import { ProductsStore } from './store';
+import { ProductsService } from '../../services/FetchService';
+import { ProductsStore } from './products-store';
 
 describe('ProductsStore', () => {
   const productsServiceStub = {

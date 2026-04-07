@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Subscription } from 'rxjs';
-
-import { Product, ProductsService } from '../services/FetchService';
+import { ProductsService } from '../../services/FetchService';
+import { Product } from '../../models/product-model';
 
 type ProductsState = {
   products: Product[];
@@ -48,7 +48,7 @@ export const ProductsStore = signalStore(
         const nextCategory = params?.category ?? store.category();
         const nextSortBy = params?.sortBy ?? store.sortBy();
         const nextOrder = params?.order ?? store.order();
-
+        
         patchState(store, {
           page: nextPage,
           limit: nextLimit,

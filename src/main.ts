@@ -5,6 +5,7 @@ import {AppComponent} from './app-component';
 import {MainComponent} from './components/products-component/products-component';
 import {ProductDetailsComponent} from './components/product-details/product-details';
 import {LandingComponent} from './components/landing/landing-component';
+import { CartComponent } from './components/cart/cart-component';
 const routes: Routes = [
   {
     path: '',
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path : 'product/:id',
     component : ProductDetailsComponent
+  },
+  {
+    path: 'cart',
+    component: CartComponent
   }
   ];
 

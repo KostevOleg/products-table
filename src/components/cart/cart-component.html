@@ -1,0 +1,44 @@
+<div class="cart">
+  <h2>Cart</h2>
+
+  @if (!cartArr().length) {
+    <div>
+      Your cart is empty
+    </div>
+  } @else {
+    <div class="cart-list">
+      @for (item of cartArr(); track item.id) {
+        <div class="cart-item">
+          <img [src]="item.images[0]" [alt]="item.title" class="cart-item__image" />
+
+          <div class="cart-item__info">
+            <h4>{{ item.title }}</h4>
+            <p>${{ item.price }}</p>
+          </div>
+
+          <div class="cart-item__controls">
+            <button type="button" (click)="cartStore.decreaseQuantity(item.id)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button type="button" (click)="cartStore.increaseQuantity(item.id)">+</button>
+          </div>
+
+          <div class="cart-item__total">
+            ${{ (item.price * item.quantity).toFixed(2) }}
+          </div>
+
+          <button type="button" class="cart-item__btn-remove" (click)="cartStore.removeFromCart(item.id)">
+            Remove
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <h3>Total: ${{ totalPrice().toFixed(2) }}</h3>
+
+      <button type="button" (click)="clearCart()">
+        Clear cart
+      </button>
+    </div>
+  }
+</div>

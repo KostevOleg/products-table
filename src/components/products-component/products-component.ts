@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnIni
 import { takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductsStore } from '../../store/store';
+import { ProductsStore } from '../../stores/products-store/products-store';
 import { PaginationComponent } from '../pagination/pagination-component';
-import { ProductsQuery } from '../models/query-model';
+import { ProductsQuery } from '../../models/query-model';
 
 @Component({
   selector: 'app-main-comp',
