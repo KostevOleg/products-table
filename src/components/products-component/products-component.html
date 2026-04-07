@@ -29,7 +29,7 @@
   @if (products().length) {
     <table class="products-table">
       <thead class="products-table__head">
-        <tr>
+        <tr >
           <th scope="col">ID</th>
           <th scope="col" class="col-title">Name</th>
           <th scope="col" (click)="toggleSort('price')">
@@ -52,19 +52,25 @@
           </th>
           <th scope="col">Brand</th>
           <th scope="col">Category</th>
+          <th>add to cart</th>
         </tr>
       </thead>
 
       <tbody class="products-table__body">
         @for (product of products(); track product.id) {
-          <tr class="products-table__row clickable" (click)="goToProduct(product.id)">
-            <td>{{ product.id }}</td>
+          <tr class="products-table__row clickable" [class.top-product]="product.rating > 4.5" (click)="goToProduct(product.id)">
+            <td> @if (product.rating > 4.5) {
+                <span class="badge">TOP</span>
+              } {{ product.id }}</td>
             <td class="products-table__title">{{ product.title }}</td>
             <td>{{ product.price }} $</td>
             <td>{{ product.rating }}</td>
             <td>{{ product.stock }}</td>
             <td>{{ product.brand }}</td>
             <td>{{ product.category }}</td>
+            <td>
+              <button class="product-table__addToCart" (click)="cartStore.updateCart({...product, quantity: 1}); $event.stopPropagation()" type="button">+</button>
+            </td>
           </tr>
         }
       </tbody>

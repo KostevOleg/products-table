@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsStore } from '../../stores/products-store/products-store';
 import { PaginationComponent } from '../pagination/pagination-component';
+import { CartStore } from '../../stores/cart-store/cart-store';
 import { ProductsQuery } from '../../models/query-model';
 
 @Component({
@@ -15,6 +16,7 @@ import { ProductsQuery } from '../../models/query-model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent implements OnInit {
+[x: string]: any;
   readonly categories = [
     'smartphones',
     'laptops',
@@ -39,6 +41,7 @@ export class MainComponent implements OnInit {
   ] as const;
 
   readonly store = inject(ProductsStore);
+  readonly cartStore = inject(CartStore)
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly fb = inject(FormBuilder);
