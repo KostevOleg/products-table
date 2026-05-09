@@ -17,3 +17,25 @@ body {
 .main-content {
   flex: 1; 
 }
+
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #b79df2, #8f73e6);
+  color: #fff;
+  font: inherit;
+  font-weight: 750;
+  box-shadow: 0 10px 22px rgba(143, 115, 230, 0.25);
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(143, 115, 230, 0.35);
+}

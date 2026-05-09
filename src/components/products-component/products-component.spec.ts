@@ -3,7 +3,7 @@ import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ProductsService } from '../../services/FetchService';
+import { ProductsService } from '../../core/services/products-service/products.service';
 import { MainComponent } from './products-component';
 
 describe('MainComponent', () => {

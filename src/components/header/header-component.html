@@ -3,9 +3,16 @@
     <a class="brand" [routerLink]="['/']" >Lavender Shop</a>
 
     <nav class="nav">
+      <a class="nav-link" [routerLink]="['/home']"  routerLinkActive="active">Home</a>
       <a class="nav-link" [routerLink]="['/product']"  routerLinkActive="active">Products</a>
     </nav>
 
-    <a class="cart-btn" [routerLink]="['/cart']">Shoping Cart</a>
+    <div class="user-actions">
+      <a  class="secondary-btn" [routerLink]="['/login']">Login</a>
+      <div class="header-cart" (mouseleave)="closeModalCart()"  (mouseenter)="openModalCart()" >
+        <a class="secondary-btn" [routerLink]="['/cart']">Shoping Cart</a>
+        <app-cart-dialog (close)="closeModalCart()" [class.hidden]="!isOpen()" class="cart-dialog"></app-cart-dialog>
+      </div>
+    </div>
   </div>
-</header>
+</header> 

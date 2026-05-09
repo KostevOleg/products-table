@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { Product } from '../../models/product-model';
-import { ProductsService } from '../../services/FetchService';
+import { ProductsService } from '../../core/services/products-service/products.service';
 import { CartStore} from '../../stores/cart-store/cart-store';
 import { CartItem } from '../../models/cart-model';
 

@@ -1,0 +1,17 @@
+<section class="login">
+  <form  [formGroup]="loginForm" class="login__form" (ngSubmit)="onLogin()">
+    <h1 class="login__title">Login</h1>
+
+    <label class="login__field">
+      <span>Username</span>
+      <input formControlName="userName" type="text" name="username" autocomplete="username" />
+    </label>
+
+    <label class="login__field">
+      <span>Password</span>
+      <input formControlName="password" type="password" name="password" autocomplete="current-password" />
+    </label>
+
+    <button [disabled]="!loginForm.valid" class="secondary-btn" type="submit">Sign in</button>
+  </form>
+</section>

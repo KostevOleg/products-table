@@ -1,0 +1,29 @@
+<div class="cart-preview">
+  <h2 class="cart-preview__title">Your current cart</h2>
+  <button class="cart-preview__close" aria-label="close cart" (click)="closeModal()"></button>
+
+  @if (cartStore.items().length === 0) {
+    <p class="cart-preview__empty">Your cart is empty. Continue shopping</p>
+  } @else {
+    <div class="cart-preview__list">
+      @for (prod of cartStore.items(); track prod.id) {
+        <div class="cart-preview__item">
+          <img
+            class="cart-preview__image"
+            [src]="prod.images[0]"
+            [alt]="prod.title"
+          />
+
+          <div class="cart-preview__info">
+            <p class="cart-preview__name">{{ prod.title }}</p>
+            <p class="cart-preview__price">${{ prod.price }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="cart-preview__footer">
+      <a class="cart-preview__link" (click)="closeModal()" [routerLink]="['/cart']">Open Cart</a>
+    </div>
+  }
+</div>

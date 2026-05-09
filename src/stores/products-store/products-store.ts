@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Subscription } from 'rxjs';
-import { ProductsService } from '../../services/FetchService';
+import { ProductsService } from '../../core/services/products-service/products.service';
 import { Product } from '../../models/product-model';
 
 type ProductsState = {

@@ -3,7 +3,7 @@ import { takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsStore } from '../../stores/products-store/products-store';
-import { PaginationComponent } from '../pagination/pagination-component';
+import { PaginationComponent } from '../../shared/pagination/pagination-component';
 import { CartStore } from '../../stores/cart-store/cart-store';
 import { ProductsQuery } from '../../models/query-model';
 

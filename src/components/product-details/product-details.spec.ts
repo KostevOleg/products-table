@@ -4,7 +4,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ProductsService } from '../../services/FetchService';
+import { ProductsService } from '../../core/services/products-service/products.service';
 import { ProductDetailsComponent } from './product-details';
 
 describe('ProductDetailsComponent', () => {

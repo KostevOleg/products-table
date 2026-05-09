@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ProductsService } from '../../services/FetchService';
+import { ProductsService } from '../../core/services/products-service/products.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { RouterLink } from '@angular/router';
